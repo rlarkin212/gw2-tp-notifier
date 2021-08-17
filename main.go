@@ -29,7 +29,7 @@ func main() {
 	for _, item := range items {
 		fmt.Printf("%+v\n", item)
 
-		str := fmt.Sprintf("%s sold for %d", item.Name, item.Price)
+		str := fmt.Sprintf("%s\n sold for %s\n at %s", item.Name, util.PriceToGold(item.Sale.Price), item.Sale.Purchased)
 		msg := tgbot.NewMessage(tgChatId, str)
 
 		bot.Send(msg)

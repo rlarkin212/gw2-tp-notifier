@@ -37,7 +37,7 @@ func FetchSales(baseUrl string) []models.Sale {
 			}
 		}
 	} else {
-		sales = rawSales[:9]
+		sales = rawSales[:5]
 	}
 
 	return sales

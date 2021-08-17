@@ -21,7 +21,7 @@ func FetchItems(baseUrl string, sales []models.Sale) []models.Item {
 		}
 
 		item := models.Item{
-			Price: sale.Price,
+			Sale: sale,
 		}
 		_ = unmarshallItem(res, &item)
 
