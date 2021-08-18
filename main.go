@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -18,7 +19,6 @@ const (
 var tgApi = util.GetEnvVar("TgApiKey")
 
 func main() {
-	logger := log.Default()
 	bot, err := tgbot.NewBotAPI(tgApi)
 	if err != nil {
 		log.Fatal(err)
@@ -27,7 +27,7 @@ func main() {
 	http.ListenAndServe(":5000", nil)
 	for range time.Tick(time.Minute * 6) {
 		getSales(bot)
-		logger.Println("called GetSales")
+		fmt.Println("called GetSales")
 	}
 }
 
