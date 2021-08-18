@@ -25,7 +25,7 @@ func main() {
 	}
 
 	http.ListenAndServe(":5000", nil)
-	for range time.Tick(time.Second * 3) {
+	for range time.Tick(time.Minute * 6) {
 		getSales(bot)
 		logger.Println("called GetSales")
 	}
