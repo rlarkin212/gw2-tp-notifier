@@ -13,7 +13,7 @@ func PriceToGold(price int64) string {
 	silver := formattedPrice[2:4]
 	copper := formattedPrice[4:6]
 
-	formatted := fmt.Sprintf("%s G %s S %s C", gold, silver, copper)
+	formatted := fmt.Sprintf("%s 🥇 %s 🥈 %s 🥉", gold, silver, copper)
 
 	return formatted
 }

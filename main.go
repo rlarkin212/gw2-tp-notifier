@@ -1,12 +1,13 @@
 package main
 
 import (
-	"fmt"
 	"log"
-	"strconv"
+	"net/http"
+	"time"
 
 	tgbot "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/rlarkin212/gw2-tp-notifer/gw2service"
+	"github.com/rlarkin212/gw2-tp-notifer/telegramservice"
 	"github.com/rlarkin212/gw2-tp-notifer/util"
 )
 
@@ -15,7 +16,6 @@ const (
 )
 
 var tgApi = util.GetEnvVar("TgApiKey")
-var tgChatId, _ = strconv.ParseInt(util.GetEnvVar("TgChatId"), 10, 64)
 
 func main() {
 	bot, err := tgbot.NewBotAPI(tgApi)
@@ -23,21 +23,15 @@ func main() {
 		log.Fatal(err)
 	}
 
+	http.ListenAndServe(":5000", nil)
+	for range time.Tick(time.Minute * 6) {
+		ping(bot)
+	}
+}
+
+func ping(bot *tgbot.BotAPI) {
 	sales := gw2service.FetchSales(gw2ApiBaseUrl)
 	items := gw2service.FetchItems(gw2ApiBaseUrl, sales)
 
-	for _, item := range items {
-		fmt.Printf("%+v\n", item)
-
-		str := fmt.Sprintf("%s\n sold for %s\n at %s", item.Name, util.PriceToGold(item.Sale.Price), item.Sale.Purchased)
-		msg := tgbot.NewMessage(tgChatId, str)
-
-		bot.Send(msg)
-	}
-
-	// for range time.Tick(time.Second * 3) {
-	// 	go func() {
-	// 		fmt.Print("yeet")
-	// 	}()
-	// }
+	telegramservice.SendMessage(bot, items)
 }

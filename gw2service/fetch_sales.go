@@ -43,6 +43,33 @@ func FetchSales(baseUrl string) []models.Sale {
 	return sales
 }
 
+func FetchSales2(baseUrl string, salesChan chan models.Sale) {
+	url := fmt.Sprintf("%s/commerce/transactions/history/sells?access_token=%s", baseUrl, gw2ApiToken)
+	currentTime := time.Now()
+	offsetTime := currentTime.Add(-6 * time.Minute)
+
+	res, err := http.Get(url)
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+
+	rawSales := []models.Sale{}
+	_ = unmarshallSales(res, &rawSales)
+
+	//if not dev get last 6 mins (api cache ezxpires every 5)
+	if environment != "dev" {
+		for _, sale := range rawSales {
+			if inTimeSpan(offsetTime, currentTime, sale.Purchased) {
+				salesChan <- sale
+			}
+		}
+	} else {
+		for _, s := range rawSales[:5] {
+			salesChan <- s
+		}
+	}
+}
+
 func unmarshallSales(res *http.Response, target *[]models.Sale) error {
 	defer res.Body.Close()
 	return json.NewDecoder(res.Body).Decode(target)
