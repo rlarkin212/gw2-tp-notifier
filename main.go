@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"time"
 
 	tgbot "github.com/go-telegram-bot-api/telegram-bot-api"
@@ -20,7 +21,7 @@ const (
 var tgApi = util.GetEnvVar("TgApiKey")
 
 func main() {
-
+	port := httpPort()
 	http.HandleFunc("/", home)
 	http.HandleFunc("/ping", ping)
 
@@ -35,6 +36,15 @@ func ping(w http.ResponseWriter, r *http.Request) {
 		getSales()
 		fmt.Printf("called GetSales @ %s", time.Now().UTC().Format(iso8601))
 	}
+}
+
+func httpPort() string {
+	port := "5000"
+
+	if os.Getenv("PORT") != "" {
+		port = os.Getenv("PORT")
+	}
+	return fmt.Sprintf(":%s", port)
 }
 
 func getSales() {
