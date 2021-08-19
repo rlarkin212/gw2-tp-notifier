@@ -45,7 +45,7 @@ func FetchSales(baseUrl string) []models.Sale {
 
 func FetchSales2(baseUrl string, salesChan chan models.Sale) {
 	url := fmt.Sprintf("%s/commerce/transactions/history/sells?access_token=%s", baseUrl, gw2ApiToken)
-	currentTime := time.Now()
+	currentTime := time.Now().UTC()
 	offsetTime := currentTime.Add(-6 * time.Minute)
 
 	res, err := http.Get(url)
