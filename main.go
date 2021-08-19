@@ -1,7 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"log"
+	"net/http"
+	"os"
 	"time"
 
 	tgbot "github.com/go-telegram-bot-api/telegram-bot-api"
@@ -19,12 +22,12 @@ var tgApi = util.GetEnvVar("TgApiKey")
 func main() {
 	bot, err := tgbot.NewBotAPI(tgApi)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal(err.Error())
 	}
 
-	// port := httpPort()
-	// http.HandleFunc("/", home)
-	// http.ListenAndServe(port, nil)
+	port := httpPort()
+	http.HandleFunc("/", home)
+	http.ListenAndServe(port, nil)
 
 	for range time.Tick(time.Minute * 6) {
 		getSales(bot)
@@ -32,9 +35,9 @@ func main() {
 	}
 }
 
-// func home(w http.ResponseWriter, r *http.Request) {
-// 	w.Write([]byte("yeet"))
-// }
+func home(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("yeet"))
+}
 
 func getSales(bot *tgbot.BotAPI) {
 	sales := gw2service.FetchSales(gw2ApiBaseUrl)
@@ -43,11 +46,11 @@ func getSales(bot *tgbot.BotAPI) {
 	telegramservice.SendMessage(bot, items)
 }
 
-// func httpPort() string {
-// 	port := "5000"
+func httpPort() string {
+	port := "5000"
 
-// 	if os.Getenv("PORT") != "" {
-// 		port = os.Getenv("PORT")
-// 	}
-// 	return fmt.Sprintf(":%s", port)
-// }
+	if os.Getenv("PORT") != "" {
+		port = os.Getenv("PORT")
+	}
+	return fmt.Sprintf(":%s", port)
+}
