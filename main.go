@@ -25,6 +25,8 @@ func main() {
 	http.HandleFunc("/", home)
 	http.HandleFunc("/ping", ping)
 
+	http.ListenAndServe(port, nil)
+
 }
 
 func home(w http.ResponseWriter, r *http.Request) {
