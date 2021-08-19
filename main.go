@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"net/http"
 	"time"
 
 	tgbot "github.com/go-telegram-bot-api/telegram-bot-api"
@@ -19,18 +20,29 @@ const (
 var tgApi = util.GetEnvVar("TgApiKey")
 
 func main() {
+
+	http.HandleFunc("/", home)
+	http.HandleFunc("/ping", ping)
+
+}
+
+func home(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("thar she blows"))
+}
+
+func ping(w http.ResponseWriter, r *http.Request) {
+	for range time.Tick(time.Minute * 6) {
+		getSales()
+		fmt.Printf("called GetSales @ %s", time.Now().UTC().Format(iso8601))
+	}
+}
+
+func getSales() {
 	bot, err := tgbot.NewBotAPI(tgApi)
 	if err != nil {
 		log.Fatal(err.Error())
 	}
 
-	for range time.Tick(time.Minute * 6) {
-		getSales(bot)
-		fmt.Printf("called GetSales @ %s", time.Now().UTC().Format(iso8601))
-	}
-}
-
-func getSales(bot *tgbot.BotAPI) {
 	sales := gw2service.FetchSales(gw2ApiBaseUrl)
 	items := gw2service.FetchItems(gw2ApiBaseUrl, sales)
 

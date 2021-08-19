@@ -1,1 +1,1 @@
-worker: bin/gw2-tp-notifer
+web: bin/gw2-tp-notifer
