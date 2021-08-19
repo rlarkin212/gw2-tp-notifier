@@ -1,1 +1,0 @@
-web: bin/gw2-tp-notifer
