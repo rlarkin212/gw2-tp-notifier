@@ -31,22 +31,6 @@ func FetchItems(baseUrl string, sales []models.Sale) []models.Item {
 	return items
 }
 
-func FetchItems2(baseUrl string, sale models.Sale, itemsChan chan models.Item) {
-	url := fmt.Sprintf("%s/items?id=%d", baseUrl, sale.ItemID)
-
-	res, err := http.Get(url)
-	if err != nil {
-		log.Fatal(err.Error())
-	}
-
-	item := models.Item{
-		Sale: sale,
-	}
-	_ = unmarshallItem(res, &item)
-
-	itemsChan <- item
-}
-
 func unmarshallItem(res *http.Response, target *models.Item) error {
 	defer res.Body.Close()
 	return json.NewDecoder(res.Body).Decode(target)
