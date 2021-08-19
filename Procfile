@@ -1,2 +1,1 @@
-web: echo "yeet"
-service: bin/gw2-tp-notifer
+worker: bin/gw2-tp-notifer
