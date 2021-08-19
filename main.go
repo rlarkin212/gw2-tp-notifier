@@ -2,9 +2,11 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 
+	tgbot "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/rlarkin212/gw2-tp-notifer/util"
 )
 
@@ -15,10 +17,11 @@ const (
 var tgApi = util.GetEnvVar("TgApiKey")
 
 func main() {
-	// bot, err := tgbot.NewBotAPI(tgApi)
-	// if err != nil {
-	// 	log.Fatal(err.Error())
-	// }
+	bot, err := tgbot.NewBotAPI(tgApi)
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+	log.Println(bot.Self.UserName)
 
 	port := httpPort()
 	http.HandleFunc("/", home)
