@@ -26,11 +26,17 @@ func main() {
 	}
 
 	port := httpPort()
+	http.HandleFunc("/", home)
 	http.ListenAndServe(port, nil)
+
 	for range time.Tick(time.Minute * 6) {
 		getSales(bot)
-		fmt.Println("called GetSales")
+		log.Println("called GetSales")
 	}
+}
+
+func home(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("yeet"))
 }
 
 func getSales(bot *tgbot.BotAPI) {
