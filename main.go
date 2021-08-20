@@ -45,13 +45,14 @@ func main() {
 }
 
 func getSales() {
-	bot, err := tgbot.NewBotAPI(tgApi)
-	if err != nil {
-		log.Fatal(err.Error())
-	}
-
 	sales := gw2service.FetchSales(gw2ApiBaseUrl)
-	items := gw2service.FetchItems(gw2ApiBaseUrl, sales)
+	if len(sales) > 0 {
+		bot, err := tgbot.NewBotAPI(tgApi)
+		if err != nil {
+			log.Fatal(err.Error())
+		}
 
-	telegramservice.SendMessage(bot, items)
+		items := gw2service.FetchItems(gw2ApiBaseUrl, sales)
+		telegramservice.SendMessage(bot, items)
+	}
 }
