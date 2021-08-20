@@ -18,23 +18,25 @@ const (
 )
 
 var tgApi = util.GetEnvVar("TgApiKey")
+var appUrl = util.GetEnvVar("AppUrl")
 
 func home(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("thar she blows"))
 }
 
+func ping(w http.ResponseWriter, r *http.Request) {
+	getSales()
+	fmt.Printf("called GetSales @ %s\n", time.Now().UTC().Format(iso8601))
+}
+
 func main() {
-	bot, err := tgbot.NewBotAPI(tgApi)
-	if err != nil {
-		log.Fatal(err.Error())
-	}
 	port := util.HttpPort()
 	http.HandleFunc("/", home)
+	http.HandleFunc("/ping", ping)
 
 	go func() {
 		for range time.Tick(time.Minute * 6) {
-			getSales(bot)
-			fmt.Printf("called GetSales @ %s\n", time.Now().UTC().Format(iso8601))
+			http.Get(fmt.Sprintf("%s/ping", appUrl))
 		}
 	}()
 
@@ -42,7 +44,12 @@ func main() {
 	http.ListenAndServe(port, nil)
 }
 
-func getSales(bot *tgbot.BotAPI) {
+func getSales() {
+	bot, err := tgbot.NewBotAPI(tgApi)
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+
 	sales := gw2service.FetchSales(gw2ApiBaseUrl)
 	items := gw2service.FetchItems(gw2ApiBaseUrl, sales)
 
