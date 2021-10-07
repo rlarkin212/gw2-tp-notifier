@@ -19,6 +19,7 @@ const (
 var tgApi = util.GetEnvVar("TgApiKey")
 
 func main() {
+	fmt.Println("--starting--")
 	for range time.Tick(time.Minute * 6) {
 		getSales()
 		fmt.Printf("called GetSales @ %s\n", time.Now().UTC().Format(iso8601))
